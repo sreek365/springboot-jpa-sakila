@@ -14,7 +14,7 @@ pipeline {
       notify ('Started')
        }
        }
-    stage('clone'){
+    stage('git clone'){
       steps {
          git 'https://github.com/sreek365/springboot-jpa-sakila.git'
       }

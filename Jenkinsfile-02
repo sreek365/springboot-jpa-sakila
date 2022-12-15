@@ -8,7 +8,7 @@ pipeline {
   stages{
     stage('clone'){
       steps {
-         git 'https://github.com/rajesh0335/petclinic.git'
+         git 'https://github.com/sreek365/springboot-jpa-sakila.git'
       }
       }
     stage('maven build') {

@@ -1,0 +1,45 @@
+pipeline {
+  agent any
+  tools {
+    jdk 'JAVA_HOME'
+    maven 'maven_local'
+  }
+  
+  stages{
+    stage('clone'){
+      steps {
+         git 'https://github.com/rajesh0335/petclinic.git'
+      }
+      }
+    stage('maven build') {
+      steps {
+         sh 'mvn clean package'
+      }
+    }
+     stage('Junit'){
+        steps {
+          junit 'target/surefire-reports/*.xml'
+        }
+     }
+     stage('Archive') {
+        steps {
+        archiveArtifacts 'target/*.?ar'
+        }
+     }
+     
+  }
+    post  {
+     success {
+          notify('Success','#00FF00')
+     }
+     failure {
+         notify('Failed','#FF0000')
+  }
+  }
+  }
+def notify(status,colour) {
+    slackSend channel: 'jenkins', color: "${colour}", message: "Build ${status} - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", teamDomain: 'sreek365'
+    emailext body: '', subject: 'Build Status', to: 'sreek945@gmail.com'
+  }
+  
+  

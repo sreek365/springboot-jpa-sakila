@@ -1,11 +1,19 @@
+def notify (status) {
+    slackSend channel: 'jenkins', color: '#00FF00', message: "Build $(status) - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", teamDomain: 'sreek365'
+}
 pipeline {
   agent any
+
   tools {
     jdk 'JAVA_HOME'
     maven 'maven_local'
   }
-  
   stages{
+    stage('Started Notification'){
+      steps {
+      notify ('Started')
+       }
+       }
     stage('clone'){
       steps {
          git 'https://github.com/sreek365/springboot-jpa-sakila.git'
@@ -16,11 +24,7 @@ pipeline {
          sh 'mvn clean package'
       }
     }
-     stage('Junit'){
-        steps {
-          junit 'target/surefire-reports/*.xml'
-        }
-     }
+     
      stage('Archive') {
         steps {
         archiveArtifacts 'target/*.?ar'
@@ -28,18 +32,13 @@ pipeline {
      }
      
   }
-    post  {
+  post  {
      success {
-          notify('Success','#00FF00')
+          notify ('success')
      }
      failure {
-         notify('Failed','#FF0000')
+         notify('Failed',)
   }
-  }
-  }
-def notify(status,colour) {
-    slackSend channel: 'jenkins', color: "${colour}", message: "Build ${status} - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", teamDomain: 'sreek365'
-    emailext body: '', subject: 'Build Status', to: 'sreek945@gmail.com'
   }
   
-  
+  }
